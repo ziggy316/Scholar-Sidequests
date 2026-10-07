@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Sidequests</title>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        /*Vars & Themes*/
+        :root {
+            --adv-color: #ef4444; /* Red for Adventures */
+            --hob-color: #f97316; /* Orange for Hobbies */
+            --fut-color: #3b82f6; /* Blue for Future */
+            --bg-color: #f1f5f9; 
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        /*Base Reset*/
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /*Icons render bolded*/
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined' !important;
+            font-variation-settings: 'wght' 700;
+        }
+
+        body {
+            background-color: #cbd5e1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /*Phone sizing*/
+        .phone-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 850px;
+            background-color: var(--bg-color);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Phone aesthetics for desktop viewing */
+            border-radius: 40px;
+            border: 12px solid #0f172a;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (max-width: 450px) {
+            .phone-container {
+                border-radius: 0;
+                border: none;
+                max-height: 100vh;
+            }
+        }
+
+        /*Header*/
+        .top-header {
+            display: flex;
+            height: 65px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            z-index: 20;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-section span.points {
+            font-size: 18px;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .bg-adv { background-color: var(--adv-color); }
+        .bg-hob { background-color: var(--hob-color); }
+        .bg-fut { background-color: var(--fut-color); }
+
+        /*Bottom Nav*/
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70px;
+            background-color: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 20;
+            padding-bottom: 10px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 25%;
+            padding: 5px;
+        }
+
+        .nav-btn.active { color: var(--fut-color); }
+        .nav-btn .icon { 
+            font-size: 24px; 
+            margin-bottom: 4px; 
+            transition: all 0.2s; 
+        }
+        .nav-btn.active .icon { 
+            transform: translateY(-2px); 
+        }
+
+        /*Main Content & Screens*/
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 90px;
+            position: relative;
+        }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .screen.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /*Cards*/
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 15px;
+        }
+
+        /*Home Screen*/
+        .hero-logo {
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .daily-tip-icon { font-size: 24px; margin-bottom: 10px; display: inline-block;}
+        .daily-tip-text { font-size: 15px; color: var(--text-muted); line-height: 1.5; }
+
+        /*Quest List Screen*/
+        .quest-item {
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .quest-item:active { transform: scale(0.98); }
+
+        .quest-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-right: 15px;
+            background-color: #e2e8f0;
+        }
+
+        .quest-list-info { flex: 1; }
+        .quest-list-title { font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /*Quest Detail Screen*/
+        .btn-back {
+            background: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text-main);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .detail-hero-img {
+            width: 100%;
+            height: 220px;
+            border-radius: 20px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-title { font-size: 24px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; line-height: 1.2; }
+        .detail-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .detail-desc { font-size: 16px; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
+
+        .btn-complete-lg {
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            background-color: #22c55e;
+            color: white;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.4);
+            transition: background-color 0.2s;
+        }
+        .btn-complete-lg:active { background-color: #16a34a; }
+
+        /*Badges Screen*/
+        .streak-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .streak-emoji { font-size: 24px; }
+        .streak-bar-wrap { flex: 1; height: 14px; background: #e2e8f0; border-radius: 10px; overflow: hidden; }
+        .streak-bar-fill { height: 100%; border-radius: 10px; transition: width 0.5s ease-out; }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-items: center;
+        }
+        .badge-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .badge-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border: 3px solid transparent;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        .badge-circle .emoji { font-size: 30px; }
+        .badge-item .name { font-size: 11px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+        
+        .badge-circle.locked {
+            background: #e2e8f0;
+            border-color: transparent !important;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        /*Profile screen*/
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid var(--fut-color);
+            margin: 0 auto 10px auto;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+        .profile-name { font-size: 20px; font-weight: 800; color: var(--text-main); }
+        .profile-level { font-size: 13px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .profile-stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .stat-box { text-align: center; }
+        .stat-num { font-size: 18px; font-weight: 800; color: var(--text-main); }
+        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;}
+
+        .profile-list { list-style: none; }
+        .profile-list li {
+            background: white;
+            padding: 16px 16px 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: #cbd5e1;
+        }
+        .profile-list li.cat-adv::before { background: var(--adv-color); }
+        .profile-list li.cat-hob::before { background: var(--hob-color); }
+        .profile-list li.cat-fut::before { background: var(--fut-color); }
+
+        .quest-log-info { display: flex; flex-direction: column; }
+        .quest-log-title { font-weight: 700; font-size: 14px; color: var(--text-main); }
+        .quest-log-date { font-size: 11px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+
+        /*Toast Notification*/
+        .toast {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #1e293b;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        /*Helper Color Classes*/
+        .color-adv { color: var(--adv-color); }
+        .color-hob { color: var(--hob-color); }
+        .color-fut { color: var(--fut-color); }
+        .bg-color-adv { background-color: #fee2e2; color: var(--adv-color); }
+        .bg-color-hob { background-color: #ffedd5; color: var(--hob-color); }
+        .bg-color-fut { background-color: #dbeafe; color: var(--fut-color); }
+
+        /*Quest Filters*/
+        .quest-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .filter-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        
+        /*All Button */
+        #filter-all { color: var(--text-muted); }
+        #filter-all.active { background: #1e293b; color: white; border-color: #1e293b; }
+        #filter-all:hover:not(.active) { background: #f8fafc; }
+
+        /*Adventures Button*/
+        #filter-adv { color: var(--adv-color); border-color: #fca5a5; background: #fef2f2; }
+        #filter-adv.active { background: var(--adv-color); color: white; border-color: var(--adv-color); }
+        #filter-adv:hover:not(.active) { background: #fee2e2; }
+
+        /*Hobbies Button*/
+        #filter-hob { color: var(--hob-color); border-color: #fdba74; background: #fff7ed; }
+        #filter-hob.active { background: var(--hob-color); color: white; border-color: var(--hob-color); }
+        #filter-hob:hover:not(.active) { background: #ffedd5; }
+
+        /*Future Button*/
+        #filter-fut { color: var(--fut-color); border-color: #93c5fd; background: #eff6ff; }
+        #filter-fut.active { background: var(--fut-color); color: white; border-color: var(--fut-color); }
+        #filter-fut:hover:not(.active) { background: #dbeafe; }
+    </style>
+</head>
+<body>
+
+
+
+    <div class="phone-container">
+        
+        <!--Header--->
+        <header class="top-header">
+            <div class="header-section bg-adv">
+                Adventures <span class="points" id="score-adv">230</span>
+            </div>
+            <div class="header-section bg-hob">
+                Hobbies <span class="points" id="score-hob">350</span>
+            </div>
+            <div class="header-section bg-fut">
+                Future <span class="points" id="score-fut">525</span>
+            </div>
+        </header>
+
+        <!--Notification-->
+        <div id="toast" class="toast">Quest Completed! +20pts</div>
+
+        <!--------------------------------Main Content----------------------------->
+        <main class="main-content">
+            
+            <!--Home Screen-->
+            <div id="screen-home" class="screen active">
+                <!------Scholar Sidequests Logo----->
+                <img src="SCHOLAR SIDEQUESTS (1).png" alt="Scholar Sidequests Logo" class="hero-logo">
+                
+                <!-----Daily Tip---->
+                <div class="card">
+                    <span class="material-symbols-outlined daily-tip-icon" style="color: #eab308; vertical-align: middle;">lightbulb</span>
+                    <h2 class="section-title" style="display:inline; vertical-align: middle;">Daily Tip</h2>
+                    <p class="daily-tip-text" style="margin-top: 10px;">
+                        Don't stress about doing everything at once! Knocking out just one small quest a day helps build your streaks and prepares you for college step-by-step.
+                    </p>
+                </div>
+
+                <!---Featured Quests Area--->
+                <h2 class="section-title" style="margin-top: 25px;">Featured Today</h2>
+                <div id="featured-quests-container">
+                </div>
+            </div>
+
+            <!----Quests Screen-->
+            <div id="screen-quests" class="screen">
+                <h2 class="section-title">Available Quests</h2>
+                
+                <!---Filter Btns--->
+                <div class="quest-filters">
+                    <button class="filter-btn active" id="filter-all" onclick="filterQuests('all')">All</button>
+                    <button class="filter-btn" id="filter-adv" onclick="filterQuests('adv')">Adventures</button>
+                    <button class="filter-btn" id="filter-hob" onclick="filterQuests('hob')">Hobbies</button>
+                    <button class="filter-btn" id="filter-fut" onclick="filterQuests('fut')">Future</button>
+                </div>
+                <div id="quest-list-container"></div>
+            </div>
+
+
+            <!---Quest Detail Screen---->
+            <div id="screen-quest-detail" class="screen">
+                <button class="btn-back" onclick="closeQuestDetail()">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span> Back
+                </button>
+                
+                <img id="detail-img" src="" alt="Quest Banner" class="detail-hero-img">
+                <h1 id="detail-title" class="detail-title">Quest Title</h1>
+                
+                <div class="detail-meta">
+                    <span id="detail-category-badge" class="badge">Category</span>
+                    <span id="detail-points" class="badge" style="background:#f1f5f9; color:#1e293b;">+0 pts</span>
+                </div>
+
+                <p id="detail-desc" class="detail-desc">Quest description goes here.</p>
+                
+                <button id="btn-complete-quest" class="btn-complete-lg">Complete Quest</button>
+            </div>
+
+            <!----Badges & Streaks Screen--->
+            <div id="screen-badges" class="screen">
+                <h2 class="section-title">Current Streaks</h2>
+                <div class="card">
+                    <div class="streak-row">
+                        <span class="material-symbols-outlined streak-emoji" style="color: var(--adv-color);">terrain</span>
+                        <div class="streak-bar-wrap"><div class="streak-bar-fill bg-adv" id="streak-bar-adv" style="width: 40%"></div></div>
+                        <span class="material-symbols-outlined streak-emoji" style="color: #f97316;">local_fire_department</span>
+                    </div>
+                    <div class="streak-row">
+                        <span class="material-symbols-outlined streak-emoji" style="color: var(--hob-color);">palette</span>
+                        <div class="streak-bar-wrap"><div class="streak-bar-fill bg-hob" id="streak-bar-hob" style="width: 80%"></div></div>
+                        <span class="material-symbols-outlined streak-emoji" style="color: #f97316;">local_fire_department</span>
+                    </div>
+                    <div class="streak-row">
+                        <span class="material-symbols-outlined streak-emoji" style="color: var(--fut-color);">school</span>
+                        <div class="streak-bar-wrap"><div class="streak-bar-fill bg-fut" id="streak-bar-fut" style="width: 20%"></div></div>
+                        <span class="material-symbols-outlined streak-emoji" style="color: #f97316;">local_fire_department</span>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Badges Earned</h2>
+                <div class="badges-grid">
+                    <div class="badge-item">
+                        <div class="badge-circle locked" id="badge-adv" style="border-color: var(--adv-color); color: var(--adv-color);">
+                            <span class="material-symbols-outlined emoji" style="font-size: 32px;">terrain</span>
+                        </div>
+                        <div class="name">First Adventure</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-circle locked" id="badge-fut" style="border-color: var(--fut-color); color: var(--fut-color);">
+                            <span class="material-symbols-outlined emoji" style="font-size: 32px;">school</span>
+                        </div>
+                        <div class="name">Future Planner</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-circle locked" id="badge-hob" style="border-color: var(--hob-color); color: var(--hob-color);">
+                            <span class="material-symbols-outlined emoji" style="font-size: 32px;">palette</span>
+                        </div>
+                        <div class="name">Creative Spark</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-circle locked" id="badge-master" style="border-color: #eab308; color: #eab308;">
+                            <span class="material-symbols-outlined emoji" style="font-size: 32px;">star</span>
+                        </div>
+                        <div class="name">Quest Master</div>
+                    </div>
+                </div>
+            </div>
+
+            <!---Profile Screen-->
+            <div id="screen-profile" class="screen">
+                <div class="profile-header">
+                    <img src="https://placehold.co/100x100/3b82f6/ffffff?text=AS" class="profile-avatar" alt="Avatar">
+                    <div class="profile-name">Zariah Quinn</div>
+                    <div class="profile-level">Level 1 Explorer</div>
+                    <div class="profile-stats-row">
+                        <div class="stat-box">
+                            <div class="stat-num" id="profile-total-quests">0</div>
+                            <div class="stat-label">Quests</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num" id="profile-total-badges">0</div>
+                            <div class="stat-label">Badges</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Activity Log</h2>
+                <ul class="profile-list" id="completed-list">
+                    <!--Completed quests shown here-->
+                    <li>
+                        <div class="quest-log-info">
+                            <span class="quest-log-title">Joined Scholar Sidequests</span>
+                            <span class="quest-log-date">Day 1</span>
+                        </div>
+                        <span style="color:var(--text-muted); font-weight: 800;">+0pts</span>
+                    </li>
+                </ul>
+            </div>
+
+        </main>
+
+        <!--Bottom Nav System-->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" id="nav-home" onclick="navigate('home')">
+                <span class="material-symbols-outlined icon">home</span> Home
+            </button>
+            <button class="nav-btn" id="nav-quests" onclick="navigate('quests')">
+                <span class="material-symbols-outlined icon">explore</span> Quests
+            </button>
+            <button class="nav-btn" id="nav-badges" onclick="navigate('badges')">
+                <span class="material-symbols-outlined icon">workspace_premium</span> Badges
+            </button>
+            <button class="nav-btn" id="nav-profile" onclick="navigate('profile')">
+                <span class="material-symbols-outlined icon">person</span> Profile
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        /* Change the quests, points, images, and scores HERE!!! */
+        
+        //Initial starting scores
+        let currentScores = {
+            adv: 230, // Adventures
+            hob: 350, // Hobbies
+            fut: 525  // Future
+        };
+
+        // Initial starting streak percentages
+        const initialStreakValues = {
+            adv: 20,
+            hob: 35,
+            fut: 50
+        };
+
+        //quests data
+        //to add a new quest, just copy one of the blocks below and change the text.
+        //categories are: "adv", "hob", or "fut"
+        const questsData = [
+            {
+                id: "q1",
+                title: "Go to a State Fair",
+                category: "adv",
+                categoryName: "Adventure",
+                points: 20,
+                image: "fair_smallImg.jpg",
+                description: "Go to a state fair, ride rides, play games, eat some new foods and have fun!"
+            },
+            {
+                id: "q2",
+                title: "Learn how to play an instrument",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 15,
+                image: "guitarImg.jpg",
+                description: "Take 30 minutes a day to learn how to play an instrument, don't worry about being perfect just have fun playing!"
+            },
+            {
+                id: "q3",
+                title: "Start writing your College Essay",
+                category: "fut",
+                categoryName: "Future",
+                points: 50,
+                image: "writtingImg.jpg",
+                description: "Open a Google Doc and brainstorm topics for your college essay. Just getting your ideas on paper can help you get started on a great essay! It can be about anything from a summer camp experience to a moment at school that impacted you!"
+            },
+            {
+                id: "q4",
+                title: "Join a New Club",
+                category: "adv",
+                categoryName: "Adventure",
+                points: 30,
+                image: "RobotImg.jpg",
+                description: "Step out of your comfort zone. Attend an introductory meeting for a school club you've never been to before."
+            },
+            {
+                id: "q5",
+                title: "Go on a college tour",
+                category: "fut",
+                categoryName: "Future",
+                points: 40,
+                image: "CollegeTourImg.jpg",
+                description: "Go on a college tour to get an idea of what colege life is like and what kind of college you may want to go to."
+            },
+            {
+                id: "q6",
+                title: "Volunteer at a local event",
+                category: "fut",
+                categoryName: "Future",
+                points: 30,
+                image: "VolunteerImg.jpg",
+                description: "Volunteer at a local event to give back to your community, meet new people, and make a positive impact on yourself and others. (Don't forget to log your volunteer hours!)."
+            },
+            {
+                id: "q7",
+                title: "take a career quiz",
+                category: "fut",
+                categoryName: "Future",
+                points: 30,
+                image: "AE Images/OnlineQuizImg.png",
+                description: "Take a career quiz to get a better idea of your intrests and potential career paths."
+            },
+            {
+                id: "q8",
+                title: "Go Your School's Football Game",
+                category: "adv",
+                categoryName: "Adventure",
+                points: 25,
+                image: "FootbalImg.jpg",
+                description: "Show your school spirit! Attend you school's football game, eat food, meet new people, and have fun!"
+            },
+            {
+                id: "q9",
+                title: "Read a non school book",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "ReadingImg.jpg",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q10",
+                title: "Learn how to skateboard",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "AE Images/SkateboardingImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q11",
+                title: "do a art project",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "AE Images/ArtistImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q12",
+                title: "Tutor a student",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "AE Images/TutoringImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q13",
+                title: "Start a YouTube Channel",
+                category: "fut",
+                categoryName: "Future",
+                points: 30,
+                image: "AE Images/YoutuberImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q14",
+                title: "Try a new sport",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "AE Images/SoccerImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            },
+            {
+                id: "q15",
+                title: "Learn a martial art",
+                category: "hob",
+                categoryName: "Hobbies",
+                points: 20,
+                image: "AE Images/TaekwondoImg.png",
+                description: "Read a non-school book just for the fun of reading! If you read a lot already try reading something outside your genre!"
+            }
+            
+            
+        ];
+
+        /*Features Logic*/
+
+        //Keep track of which quest user is currently looking at
+        let activeQuestId = null;
+        
+        //Track completed quests for badges
+        let completedQuestsCount = { adv: 0, hob: 0, fut: 0, total: 0 };
+
+        //Initialize app
+        window.onload = function() {
+            renderQuestList('all');
+            renderFeaturedQuests();
+            updateScoreUI();
+            updateStreaksUI();
+        };
+
+        //show featured quests on Home Screen
+        function renderFeaturedQuests() {
+            const container = document.getElementById('featured-quests-container');
+            container.innerHTML = ''; 
+            const availableQuests = questsData.filter(q => !q.completed);
+            const featured = availableQuests.slice(0, 2);
+
+            if (featured.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px 0;">You completed all featured quests for today! 🎉</p>';
+                return;
+            }
+
+            featured.forEach(quest => {
+                let badgeClass = '';
+                if(quest.category === 'adv') badgeClass = 'bg-color-adv';
+                if(quest.category === 'hob') badgeClass = 'bg-color-hob';
+                if(quest.category === 'fut') badgeClass = 'bg-color-fut';
+
+                const questHTML = `
+                    <div class="quest-item" onclick="openQuestDetail('${quest.id}')">
+                        <img src="${quest.image}" alt="${quest.title}" class="quest-thumb">
+                        <div class="quest-list-info">
+                            <div class="quest-list-title">${quest.title}</div>
+                            <span class="badge ${badgeClass}">${quest.categoryName}</span>
+                            <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-left: 5px;">+${quest.points}pts</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questHTML;
+            });
+        }
+
+        function renderQuestList(filterCategory = 'all') {
+            const container = document.getElementById('quest-list-container');
+            container.innerHTML = '';
+
+            let questsToRender = questsData;
+            
+            //Filter quests if a category is selected
+            if (filterCategory !== 'all') {
+                questsToRender = questsData.filter(q => q.category === filterCategory);
+            }
+
+            //Only show quests that haven't been completed
+            questsToRender = questsToRender.filter(q => !q.completed);
+
+            if (questsToRender.length === 0) {
+                 container.innerHTML = '<p style="color: var(--text-muted); font-size: 14px; text-align: center; padding: 20px 0;">No available quests in this category.</p>';
+                 return;
+            }
+
+            questsToRender.forEach(quest => {
+                let badgeClass = '';
+                if(quest.category === 'adv') badgeClass = 'bg-color-adv';
+                if(quest.category === 'hob') badgeClass = 'bg-color-hob';
+                if(quest.category === 'fut') badgeClass = 'bg-color-fut';
+
+                //Create HTML for the quest item
+                const questHTML = `
+                    <div class="quest-item" id="card-${quest.id}" onclick="openQuestDetail('${quest.id}')">
+                        <img src="${quest.image}" alt="${quest.title}" class="quest-thumb">
+                        <div class="quest-list-info">
+                            <div class="quest-list-title">${quest.title}</div>
+                            <span class="badge ${badgeClass}">${quest.categoryName}</span>
+                            <span style="font-size: 12px; color: var(--text-muted); font-weight: 600; margin-left: 5px;">+${quest.points}pts</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += questHTML;
+            });
+        }
+
+        //Handle filter button clicks
+        function filterQuests(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('filter-' + category).classList.add('active');
+            renderQuestList(category);
+        }
+
+        //Navigation System
+        function navigate(tabName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById('screen-' + tabName).classList.add('active');
+            
+            let navBtn = document.getElementById('nav-' + tabName);
+            if(navBtn) navBtn.classList.add('active');
+        }
+
+        //Open Quest Detail Screen
+        function openQuestDetail(questId) {
+            const quest = questsData.find(q => q.id === questId);
+            if(!quest) return;
+
+            activeQuestId = questId;
+
+            document.getElementById('detail-img').src = quest.image;
+            document.getElementById('detail-title').innerText = quest.title;
+            document.getElementById('detail-desc').innerText = quest.description;
+            document.getElementById('detail-points').innerText = `+${quest.points} pts`;
+            
+            const badge = document.getElementById('detail-category-badge');
+            badge.innerText = quest.categoryName;
+            
+            //Set the colors for badge
+            badge.className = 'badge';
+            if(quest.category === 'adv') badge.classList.add('bg-color-adv');
+            if(quest.category === 'hob') badge.classList.add('bg-color-hob');
+            if(quest.category === 'fut') badge.classList.add('bg-color-fut');
+
+            //the complete button calls completeQuest with ID
+            document.getElementById('btn-complete-quest').onclick = function() {
+                completeQuest(quest.id);
+            };
+
+            navigate('quest-detail');
+        }
+
+        //Go Back to Quests List
+        function closeQuestDetail() {
+            navigate('quests');
+        }
+
+        //Complete a Quest
+        function completeQuest(questId) {
+            const quest = questsData.find(q => q.id === questId);
+            if(!quest) return;
+
+            quest.completed = true;
+
+            currentScores[quest.category] += quest.points;
+            completedQuestsCount[quest.category]++; 
+            completedQuestsCount.total++;
+            
+            updateScoreUI();
+
+            const cardEl = document.getElementById(`card-${questId}`);
+            if(cardEl) cardEl.style.display = 'none';
+
+            //Refresh the featured list
+            renderFeaturedQuests();
+            const activeFilter = document.querySelector('.filter-btn.active').id.replace('filter-', '');
+            renderQuestList(activeFilter);
+
+
+            //Add quest to Profile list of completed quests
+            addToProfile(quest);
+            //Check if any badges were unlocked
+            checkBadges();
+            //Update streak bars
+            updateStreaksUI();
+            //Show success message
+            showToast(`Awesome! +${quest.points} ${quest.categoryName} points`);
+            //Go back to the main list
+            closeQuestDetail();
+        }
+
+        //Check and unlock badges
+        function checkBadges() {
+            //First Adventure Badge
+            let badgeAdv = document.getElementById('badge-adv');
+            if(completedQuestsCount.adv >= 1 && badgeAdv.classList.contains('locked')) {
+                badgeAdv.classList.remove('locked');
+                setTimeout(() => showToast("Badge Unlocked: First Adventure!"), 3500);
+            }
+
+            //Future Planner Badge
+            let badgeFut = document.getElementById('badge-fut');
+            if(completedQuestsCount.fut >= 1 && badgeFut.classList.contains('locked')) {
+                badgeFut.classList.remove('locked');
+                setTimeout(() => showToast("Badge Unlocked: Future Planner!"), 3500);
+            }
+
+            //Creative Spark Badge
+            let badgeHob = document.getElementById('badge-hob');
+            if(completedQuestsCount.hob >= 1 && badgeHob.classList.contains('locked')) {
+                badgeHob.classList.remove('locked');
+                setTimeout(() => showToast("Badge Unlocked: Creative Spark!"), 3500);
+            }
+
+            //Quest Master Badge (3 Total Quests)
+            let badgeMaster = document.getElementById('badge-master');
+            if(completedQuestsCount.total >= 3 && badgeMaster.classList.contains('locked')) {
+                badgeMaster.classList.remove('locked');
+                setTimeout(() => showToast("Badge Unlocked: Quest Master!"), 3500);
+            }
+
+            //Update Profile Badge Count
+            let unlockedCount = document.querySelectorAll('.badge-circle:not(.locked)').length;
+            document.getElementById('profile-total-badges').innerText = unlockedCount;
+        }
+
+        //Update header UI
+        function updateScoreUI() {
+            document.getElementById('score-adv').innerText = currentScores.adv;
+            document.getElementById('score-hob').innerText = currentScores.hob;
+            document.getElementById('score-fut').innerText = currentScores.fut;
+        }
+
+        //Update Streak Bars UI
+        function updateStreaksUI() {
+            //completing 5 quests fills the bar
+            const maxQuestsForFullStreak = 5;
+            
+            //Calculate progress from completed quests, capped at 100% total
+            const advProgress = Math.min((completedQuestsCount.adv / maxQuestsForFullStreak) * (100 - initialStreakValues.adv), (100 - initialStreakValues.adv));
+            const hobProgress = Math.min((completedQuestsCount.hob / maxQuestsForFullStreak) * (100 - initialStreakValues.hob), (100 - initialStreakValues.hob));
+            const futProgress = Math.min((completedQuestsCount.fut / maxQuestsForFullStreak) * (100 - initialStreakValues.fut), (100 - initialStreakValues.fut));
+
+            const advPercentage = initialStreakValues.adv + advProgress;
+            const hobPercentage = initialStreakValues.hob + hobProgress;
+            const futPercentage = initialStreakValues.fut + futProgress;
+
+            document.getElementById('streak-bar-adv').style.width = advPercentage + '%';
+            document.getElementById('streak-bar-hob').style.width = hobPercentage + '%';
+            document.getElementById('streak-bar-fut').style.width = futPercentage + '%';
+        }
+
+        //Add completed quest to Profile Screen
+        function addToProfile(quest) {
+            const profileList = document.getElementById('completed-list');
+            
+            let textColor = '';
+            if(quest.category === 'adv') textColor = 'color-adv';
+            if(quest.category === 'hob') textColor = 'color-hob';
+            if(quest.category === 'fut') textColor = 'color-fut';
+
+            const li = document.createElement('li');
+            li.className = 'cat-' + quest.category;
+            
+            li.innerHTML = `
+                <div class="quest-log-info">
+                    <span class="quest-log-title">${quest.title}</span>
+                    <span class="quest-log-date">Just now</span>
+                </div>
+                <span class="${textColor}" style="font-weight:800;">+${quest.points}pts</span>
+            `;
+            
+            profileList.insertBefore(li, profileList.firstChild);
+
+            //Update Stats
+            document.getElementById('profile-total-quests').innerText = completedQuestsCount.total;
+            
+            //Level up based on amount of quests done
+            if(completedQuestsCount.total >= 3) {
+                document.querySelector('.profile-level').innerText = "Level 2 Adventurer";
+            }
+        }
+
+        //Toast notification system
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('show');
+            
+            //Hide notification after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
